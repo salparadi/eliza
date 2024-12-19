@@ -617,6 +617,7 @@ export enum Clients {
     LENS = "lens",
     AUTO = "auto",
     SLACK = "slack",
+    WARPCAST = "warpcast",
 }
 
 export interface IAgentConfig {
@@ -656,16 +657,20 @@ export type Character = {
         shouldRespondTemplate?: string;
         continueMessageHandlerTemplate?: string;
         evaluationTemplate?: string;
+        twitterActionTemplate?: string;
         twitterSearchTemplate?: string;
         twitterPostTemplate?: string;
         twitterMessageHandlerTemplate?: string;
         twitterShouldRespondTemplate?: string;
         farcasterPostTemplate?: string;
-        lensPostTemplate?: string;
         farcasterMessageHandlerTemplate?: string;
-        lensMessageHandlerTemplate?: string;
         farcasterShouldRespondTemplate?: string;
+        lensPostTemplate?: string;
+        lensMessageHandlerTemplate?: string;
         lensShouldRespondTemplate?: string;
+        warpcastPostTemplate?: string;
+        warpcastMessageHandlerTemplate?: string;
+        warpcastShouldRespondTemplate?: string;
         telegramMessageHandlerTemplate?: string;
         telegramShouldRespondTemplate?: string;
         discordVoiceHandlerTemplate?: string;

@@ -27,6 +27,7 @@
     "@ai16z/client-telegram": "workspace:*",
     "@ai16z/client-twitter": "workspace:*",
     "@ai16z/client-slack": "workspace:*",
+    "@ai16z/client-warpcast": "workspace:*",
     "@ai16z/eliza": "workspace:*",
     "@ai16z/plugin-0g": "workspace:*",
     "@ai16z/plugin-aptos": "workspace:*",
@@ -50,6 +51,7 @@
     "@ai16z/plugin-multiversx": "workspace:*",
     "@ai16z/plugin-near": "workspace:*",
     "@ai16z/plugin-zksync-era": "workspace:*",
+    "@ai16z/plugin-warpcast-tips": "workspace:*",
     "readline": "1.3.0",
     "ws": "8.18.0",
     "yargs": "17.7.2"

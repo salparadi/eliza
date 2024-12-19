@@ -7,6 +7,8 @@ import { LensAgentClient } from "@ai16z/client-lens";
 import { SlackClientInterface } from "@ai16z/client-slack";
 import { TelegramClientInterface } from "@ai16z/client-telegram";
 import { TwitterClientInterface } from "@ai16z/client-twitter";
+import { WarpcastAgentClient } from "@ai16z/client-warpcast";
+
 import {
     AgentRuntime,
     CacheManager,
@@ -53,6 +55,7 @@ import { suiPlugin } from "@ai16z/plugin-sui";
 import { TEEMode, teePlugin } from "@ai16z/plugin-tee";
 import { tonPlugin } from "@ai16z/plugin-ton";
 import { zksyncEraPlugin } from "@ai16z/plugin-zksync-era";
+import { warpcastTipsPlugin } from "@ai16z/plugin-warpcast-tips";
 import Database from "better-sqlite3";
 import fs from "fs";
 import path from "path";
@@ -382,7 +385,17 @@ export async function initializeClients(
             clients.farcaster = farcasterClient;
         }
     }
-    if (clientTypes.includes("lens")) {
+
+    if (clientTypes.includes(Clients.WARPCAST)) {
+        // why is this one different :(
+        const warpcastClient = new WarpcastAgentClient(runtime);
+        if (warpcastClient) {
+            warpcastClient.start();
+            clients.warpcast = warpcastClient;
+        }
+    }
+
+    if (clientTypes.includes(Clients.LENS)) {
         const lensClient = new LensAgentClient(runtime);
         lensClient.start();
         clients.lens = lensClient;
@@ -549,6 +562,7 @@ export async function createAgent(
             getSecret(character, "TON_PRIVATE_KEY") ? tonPlugin : null,
             getSecret(character, "SUI_PRIVATE_KEY") ? suiPlugin : null,
             getSecret(character, "STORY_PRIVATE_KEY") ? storyPlugin : null,
+            getSecret(character, "WARPCAST_PRIVATE_KEY") ? warpcastTipsPlugin : null,
         ].filter(Boolean),
         providers: [],
         actions: [],
