@@ -35,7 +35,6 @@ import createGoatPlugin from "@elizaos/plugin-goat";
 // import { intifacePlugin } from "@elizaos/plugin-intiface";
 import { DirectClient } from "@elizaos/client-direct";
 import { aptosPlugin } from "@elizaos/plugin-aptos";
-import { warpcastTipsPlugin } from "@elizaos/plugin-warpcast-tips";
 import {
     advancedTradePlugin,
     coinbaseCommercePlugin,
@@ -610,9 +609,6 @@ export async function createAgent(
             getSecret(character, "FUEL_PRIVATE_KEY") ? fuelPlugin : null,
             getSecret(character, "AVALANCHE_PRIVATE_KEY")
                 ? avalanchePlugin
-                : null,
-            getSecret(character, "WARPCAST_PRIVATE_KEY")
-                ? warpcastTipsPlugin
                 : null,
         ].filter(Boolean),
         providers: [],

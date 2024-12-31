@@ -788,6 +788,9 @@ importers:
       axios-retry:
         specifier: ^3.5.0
         version: 3.9.1
+      ethers:
+        specifier: ^6.0.0
+        version: 6.13.4(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       viem:
         specifier: ^2.21.0
         version: 2.21.54(bufferutil@4.0.8)(typescript@5.6.3)(utf-8-validate@5.0.10)(zod@3.23.8)

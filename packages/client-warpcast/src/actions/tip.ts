@@ -1,32 +1,24 @@
-import { Action, IAgentRuntime, Memory, State, elizaLogger } from '@elizaos/core'
-import { WarpcastAgentClient } from '@elizaos/client-warpcast'
-import { TokenService } from '../services/TokenService'
-import { TipService } from '../services/TipService'
-
-export enum TipReason {
-    HIGH_QUALITY = 'HIGH_QUALITY',
-    POTENTIAL_VIRALITY = 'POTENTIAL_VIRALITY',
-    HIGH_ENGAGEMENT = 'HIGH_ENGAGEMENT',
-    INNOVATIVE_IDEAS = 'INNOVATIVE_IDEAS'
-}
-
-interface TipActionContent {
-    reason: TipReason;
-    castHash: string;
-    castAuthorFID: number;
-}
+import { Action, elizaLogger } from '@elizaos/core';
+import { TipReason, TipActionContent } from '../types';
+import { TokenService } from '../services/TokenService';
+import { TipService } from '../services/TipService';
+import { WarpcastClient } from '../client';
 
 const tipService = new TipService();
 
 export const tipAction: Action = {
     name: 'tip',
     description: 'Tips a Farcaster user based on their content quality',
-    validate: async (runtime: IAgentRuntime) => {
+    validate: async (runtime) => {
+        if (runtime.getSetting('WARPCAST_TIPS_ENABLED') !== 'true') {
+            return false;
+        }
+
         const requiredSettings = [
-            'TIP_BASE_AMOUNT',
-            'TIP_RPC_URL',
-            'TIP_PRIVATE_KEY',
-            'TIP_TOKEN_ADDRESS'
+            'WARPCAST_TIP_AMOUNT',
+            'WARPCAST_TIP_RPC_URL',
+            'WARPCAST_TIP_PRIVATE_KEY',
+            'WARPCAST_TIP_TOKEN_ADDRESS'
         ];
 
         return requiredSettings.every(setting => {
@@ -34,9 +26,8 @@ export const tipAction: Action = {
             return value !== undefined && value !== null && value !== '';
         });
     },
-    handler: async (runtime: IAgentRuntime, message: Memory, state: State) => {
+    handler: async (runtime, message) => {
         elizaLogger.info('=== Tip handler called ===');
-        elizaLogger.info('Message:', JSON.stringify(message, null, 2));
 
         try {
             const { reason, castHash, castAuthorFID } = extractTipContent(message);
@@ -48,59 +39,44 @@ export const tipAction: Action = {
             }
 
             if (!tipService.canTip(castAuthorFID)) {
-                elizaLogger.info(`User ${castAuthorFID} has already been tipped today`);
                 return false;
             }
 
-            const warpcastClient = Object.values(runtime.clients || {}).find(
-                client => client instanceof WarpcastAgentClient
-            ) as WarpcastAgentClient | undefined;
-
-            if (!warpcastClient?.client) {
-                elizaLogger.error('No WarpcastAgentClient found in runtime');
+            const client = runtime.clients?.warpcast?.client as WarpcastClient;
+            if (!client) {
+                elizaLogger.error('No WarpcastClient found in runtime');
                 return false;
             }
 
-            const client = warpcastClient.client;
-            elizaLogger.info('Using existing WarpcastClient instance');
-
-            // Get the user profile directly instead of looking for cast data
-            const profile = await client.getProfile(castAuthorFID);
-            const verifications = await client.getVerifications(castAuthorFID);
+            // Get the user profile and verifications
+            const [profile, verifications] = await Promise.all([
+                client.getProfile(castAuthorFID),
+                client.getVerifications(castAuthorFID)
+            ]);
 
             if (!profile) {
                 elizaLogger.error('Could not fetch profile for FID:', castAuthorFID);
                 return false;
             }
-            if (!verifications) {
-                elizaLogger.error('Could not fetch verifications for FID:', castAuthorFID);
-                return false;
-            }
 
-            // Safely get verified address with null check
+            // Get verified Ethereum address or fallback to custody address
             const verifiedAddress = verifications
                 ?.filter(v => v.protocol === 'ethereum')
                 .sort((a, b) => a.timestamp - b.timestamp)[0]?.address;
 
-            if (verifiedAddress) {
-                elizaLogger.info('Found verified address:', verifiedAddress);
-            }
-
-            // Fallback to custody address if no verified address is found
-            const custodyAddress = profile.address;
-            if (!verifiedAddress && custodyAddress) {
-                elizaLogger.info('Using custody address:', custodyAddress);
-            }
-
-            const recipientAddress = verifiedAddress || custodyAddress;
+            const recipientAddress = verifiedAddress || profile.address;
             if (!recipientAddress) {
                 elizaLogger.error('Could not find any valid ETH address for FID');
                 return false;
             }
 
-            const tokenService = await TokenService.create(runtime);
-            const baseAmount = runtime.getSetting('TIP_BASE_AMOUNT');
+            const tokenService = await TokenService.create(
+                runtime.getSetting('WARPCAST_TIP_RPC_URL')!,
+                runtime.getSetting('WARPCAST_TIP_PRIVATE_KEY')!,
+                runtime.getSetting('WARPCAST_TIP_TOKEN_ADDRESS')!
+            );
 
+            const baseAmount = runtime.getSetting('WARPCAST_TIP_AMOUNT')!;
             elizaLogger.info('Initiating tip using configured amount:', baseAmount);
 
             if (runtime.getSetting("WARPCAST_DRY_RUN") === "true") {
@@ -112,7 +88,7 @@ export const tipAction: Action = {
 
             const txHash = await tokenService.sendTip(recipientAddress, baseAmount);
 
-            // Simple confirmation reply to the cast
+            // Reply to the cast with confirmation
             await client.publishCast({
                 text: `Tip sent! https://basescan.org/tx/${txHash}`,
                 parent: {
@@ -144,12 +120,12 @@ export const tipAction: Action = {
     similes: ['reward', 'send_tip']
 }
 
-function extractTipContent(message: Memory): TipActionContent {
+function extractTipContent(message: any): TipActionContent {
     const actionContent = message.content?.content || message.content;
     return {
-        reason: (actionContent as any)?.reason,
-        castHash: (actionContent as any)?.castHash,
-        castAuthorFID: (actionContent as any)?.castAuthorFID
+        reason: actionContent?.reason,
+        castHash: actionContent?.castHash,
+        castAuthorFID: actionContent?.castAuthorFID
     };
 }
 

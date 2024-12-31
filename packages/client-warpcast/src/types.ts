@@ -1,5 +1,18 @@
 import { UUID } from "@elizaos/core";
 
+export enum TipReason {
+    HIGH_QUALITY = 'HIGH_QUALITY',
+    POTENTIAL_VIRALITY = 'POTENTIAL_VIRALITY',
+    HIGH_ENGAGEMENT = 'HIGH_ENGAGEMENT',
+    INNOVATIVE_IDEAS = 'INNOVATIVE_IDEAS'
+}
+
+export interface TipActionContent {
+    reason: TipReason;
+    castHash: string;
+    castAuthorFID: number;
+}
+
 export interface WarpcastClientConfig {
   fid: number;
   privateKey: string;

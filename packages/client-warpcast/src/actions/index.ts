@@ -1,0 +1,1 @@
+export { tipAction } from './tip';

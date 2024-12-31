@@ -3,6 +3,8 @@ import { WarpcastClient } from "./client";
 import { WarpcastPostManager } from "./post";
 import { WarpcastInteractionManager } from "./interactions";
 
+export * from './actions';
+
 export class WarpcastAgentClient implements Client {
     client: WarpcastClient;
     posts: WarpcastPostManager;
