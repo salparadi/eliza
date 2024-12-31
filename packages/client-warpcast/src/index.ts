@@ -2,8 +2,10 @@ import { Client, IAgentRuntime, elizaLogger } from "@elizaos/core";
 import { WarpcastClient } from "./client";
 import { WarpcastPostManager } from "./post";
 import { WarpcastInteractionManager } from "./interactions";
+import { tipAction } from './actions/tip';
 
-export * from './actions';
+export * from './actions/tip';
+export * from './tools';
 
 export class WarpcastAgentClient implements Client {
     client: WarpcastClient;
@@ -53,6 +55,12 @@ export class WarpcastAgentClient implements Client {
             this.runtime,
             this.cache
         );
+
+        // Register the tip action with the runtime
+        if (runtime.getSetting('WARPCAST_TIPS_ENABLED') === 'true') {
+            elizaLogger.info('Registering Warpcast tip action');
+            runtime.registerAction(tipAction);
+        }
     }
 
     async start() {

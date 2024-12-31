@@ -21,7 +21,7 @@ import {
     shouldRespondTemplate,
 } from "./prompts";
 import { castUuid } from "./utils";
-import { sendCast } from "./actions";
+import { sendCast } from "./tools";
 
 export class WarpcastInteractionManager {
     private timeout: NodeJS.Timeout | undefined;

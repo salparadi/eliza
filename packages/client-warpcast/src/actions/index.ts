@@ -1,1 +1,3 @@
-export { tipAction } from './tip';
+import { tipAction } from './tip';
+
+export { tipAction };

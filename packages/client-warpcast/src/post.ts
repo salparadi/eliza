@@ -10,7 +10,7 @@ import { WarpcastClient } from "./client";
 import { formatTimeline, postTemplate } from "./prompts";
 import { castUuid } from "./utils";
 import { createCastMemory } from "./memory";
-import { sendCast } from "./actions";
+import { sendCast } from "./tools";
 
 export class WarpcastPostManager {
     private timeout: NodeJS.Timeout | undefined;
