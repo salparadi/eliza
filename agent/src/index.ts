@@ -7,6 +7,7 @@ import { LensAgentClient } from "@elizaos/client-lens";
 import { SlackClientInterface } from "@elizaos/client-slack";
 import { TelegramClientInterface } from "@elizaos/client-telegram";
 import { TwitterClientInterface } from "@elizaos/client-twitter";
+import { WarpcastAgentClient } from "@elizaos/client-warpcast";
 import {
     AgentRuntime,
     CacheManager,
@@ -34,6 +35,7 @@ import createGoatPlugin from "@elizaos/plugin-goat";
 // import { intifacePlugin } from "@elizaos/plugin-intiface";
 import { DirectClient } from "@elizaos/client-direct";
 import { aptosPlugin } from "@elizaos/plugin-aptos";
+import { warpcastTipsPlugin } from "@elizaos/plugin-warpcast-tips";
 import {
     advancedTradePlugin,
     coinbaseCommercePlugin,
@@ -424,6 +426,15 @@ export async function initializeClients(
             clients.farcaster = farcasterClient;
         }
     }
+    if (clientTypes.includes(Clients.WARPCAST)) {
+        // why is this one different :(
+        const warpcastClient = new WarpcastAgentClient(runtime);
+        if (warpcastClient) {
+            warpcastClient.start();
+            clients.warpcast = warpcastClient;
+        }
+    }
+
     if (clientTypes.includes("lens")) {
         const lensClient = new LensAgentClient(runtime);
         lensClient.start();
@@ -599,6 +610,9 @@ export async function createAgent(
             getSecret(character, "FUEL_PRIVATE_KEY") ? fuelPlugin : null,
             getSecret(character, "AVALANCHE_PRIVATE_KEY")
                 ? avalanchePlugin
+                : null,
+            getSecret(character, "WARPCAST_PRIVATE_KEY")
+                ? warpcastTipsPlugin
                 : null,
         ].filter(Boolean),
         providers: [],

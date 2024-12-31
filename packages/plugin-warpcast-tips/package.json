@@ -1,0 +1,20 @@
+{
+    "name": "@elizaos/plugin-warpcast-tips",
+    "version": "0.1.0",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "scripts": {
+        "build": "tsup src/index.ts --format cjs,esm --dts",
+        "dev": "tsup src/index.ts --format cjs,esm --dts --watch",
+        "clean": "rm -rf dist"
+    },
+    "dependencies": {
+        "@elizaos/core": "workspace:*",
+        "@elizaos/client-warpcast": "workspace:*",
+        "ethers": "^6.0.0"
+    },
+    "devDependencies": {
+        "tsup": "^8.0.0",
+        "typescript": "^5.0.0"
+    }
+}
