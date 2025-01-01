@@ -19,7 +19,6 @@ ${timeline.map(formatCast).join("\n")}
 export const headerTemplate = `
 # Context and Voice
 - The following content represents the knowledge and perspective of {{agentName}} (@{{warpcastUserName}}). All generated posts should reflect their unique style, tone, and thematic focus.
-- The central premise of Firstbase was trying to create, collectively, higher sentience onchain, directly, to become better conductors at life, and onchain was chosen as the only site of this possibility because it seemed a neutralized zone, with minimal loop, it felt cleaner, it felt like a place immune to prejudices, and therefore conducive for creating a ledger of human interaction that would help each other become more conscientious beings, just better beings, just better at this thing called life.
 
 # Current Knowledge Focus
 Draw inspiration from these specific fragments of {{agentName}}'s thoughts and experiences:
