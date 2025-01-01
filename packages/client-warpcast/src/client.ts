@@ -34,13 +34,7 @@ export class WarpcastClient {
         cache: Map<string, any>;
     }) {
         WarpcastClient.instanceCount++;
-        elizaLogger.info(`Creating WarpcastClient instance #${WarpcastClient.instanceCount}`);
-        elizaLogger.info("Initialization call stack:",
-            new Error().stack?.split('\n')
-                .slice(1) // Remove the "Error" line
-                .map(line => line.trim())
-                .join('\n')
-        );
+        elizaLogger.info(`Creating WarpcastClient`);
 
         this.cache = new Map();
         this.runtime = opts.runtime;

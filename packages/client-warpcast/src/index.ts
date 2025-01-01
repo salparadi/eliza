@@ -18,22 +18,14 @@ export class WarpcastAgentClient implements Client {
         public runtime: IAgentRuntime,
         client?: WarpcastClient
     ) {
-        WarpcastAgentClient.instanceCount++;
-        elizaLogger.info(`Creating WarpcastAgentClient instance #${WarpcastAgentClient.instanceCount}`);
-        elizaLogger.info("Initialization call stack:",
-            new Error().stack?.split('\n')
-                .slice(1) // Remove the "Error" line
-                .map(line => line.trim())
-                .join('\n')
-        );
+        elizaLogger.info(`Creating WarpcastAgentClient`);
 
         this.cache = new Map<string, any>();
 
         if (client) {
-            elizaLogger.info("Using existing Warpcast client instance");
+            elizaLogger.info("Using existing WarpcastClient");
             this.client = client;
         } else {
-            elizaLogger.info("Creating new Warpcast client instance");
             this.client = new WarpcastClient({
                 runtime,
                 fid: Number(runtime.getSetting("WARPCAST_FID")!),
