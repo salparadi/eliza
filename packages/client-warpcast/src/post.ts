@@ -9,9 +9,8 @@ import {
 } from "@elizaos/core";
 import { WarpcastClient } from "./client";
 import { formatTimeline, postTemplate } from "./prompts";
-import { castUuid } from "./utils";
+import { castUuid, sendCast } from "./utils";
 import { createCastMemory } from "./memory";
-import { sendCast } from "./tools";
 import type { Profile } from "./types";
 
 export class WarpcastPostManager {

@@ -11,7 +11,6 @@ import {
     type IAgentRuntime,
 } from "@elizaos/core";
 import type { WarpcastClient } from "./client";
-import { toHex } from "viem";
 import { buildConversationThread, createCastMemory } from "./memory";
 import { Cast, Profile } from "./types";
 import {
@@ -20,8 +19,7 @@ import {
     messageHandlerTemplate,
     shouldRespondTemplate,
 } from "./prompts";
-import { castUuid } from "./utils";
-import { sendCast } from "./tools";
+import { castUuid, sendCast } from "./utils";
 
 export class WarpcastInteractionManager {
     private timeout: NodeJS.Timeout | undefined;

@@ -7,7 +7,6 @@ import {
     type UUID,
 } from "@elizaos/core";
 import type { Cast } from "./types";
-import { toHex } from "viem";
 import { castUuid } from "./utils";
 import type { WarpcastClient } from "./client";
 
