@@ -5,7 +5,7 @@ import { WarpcastInteractionManager } from "./interactions";
 import { tipAction } from './actions/tip';
 
 export * from './actions/tip';
-export * from './tools';
+export * from './utils';
 
 export class WarpcastAgentClient implements Client {
     client: WarpcastClient;
